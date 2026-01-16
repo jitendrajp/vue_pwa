@@ -1,34 +1,44 @@
 import { defineStore } from 'pinia'
 import api from '@/services/api'
+import {
+  addToQueue,
+  getQueue,
+  removeFromQueue
+} from '@/db/queue.db'
 
 export const useOfflineQueueStore = defineStore('offlineQueue', {
   state: () => ({
-    queue: []
+    syncing: false
   }),
 
   actions: {
-    enqueue(job) {
-      this.queue.push(job)
+    async enqueue(job) {
+      await addToQueue(job)
     },
 
     async sync() {
-      if (!navigator.onLine || !this.queue.length) return
+      if (!navigator.onLine || this.syncing) return
 
-      const remaining = []
+      this.syncing = true
 
-      for (const job of this.queue) {
+      const queue = await getQueue()
+
+      for (const job of queue) {
         try {
           await api({
             method: job.method,
             url: job.url,
             data: job.data
           })
+
+          await removeFromQueue(job.id)
         } catch (e) {
-          remaining.push(job)
+          // stop on first failure to preserve order
+          break
         }
       }
 
-      this.queue = remaining
+      this.syncing = false
     }
   }
 })
