@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { VitePWA } from 'vite-plugin-pwa'
+import path from 'path'
 
 export default defineConfig({
   plugins: [
@@ -11,10 +12,9 @@ export default defineConfig({
       manifest: {
         name: 'Vue PWA',
         short_name: 'VuePWA',
-        description: 'Offline-first Vue PWA',
-        theme_color: '#ffffff',
-        background_color: 'transparent',
         display: 'standalone',
+        background_color: 'transparent',
+        theme_color: '#ffffff',
         start_url: '/',
         icons: [
           {
@@ -31,6 +31,13 @@ export default defineConfig({
       }
     })
   ],
+
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src')
+    }
+  },
+
   server: {
     host: true
   }
