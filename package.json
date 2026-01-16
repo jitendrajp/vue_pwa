@@ -13,7 +13,7 @@
     "vue-router": "^4.3.0",
     "pinia": "^2.1.7",
     "axios": "^1.6.0",
-    "vue-i18n": "^9.8.0",
+    "vue-i18n": "^11.2.8",
     "idb": "^8.0.0"
   },
   "devDependencies": {
