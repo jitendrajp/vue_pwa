@@ -6,7 +6,12 @@ import router from './router'
 import i18n from './i18n'
 
 import './styles/tailwind.css'
-
+import { useUIStore } from '@/stores/ui'
+import { useOfflineQueueStore } from '@/stores/offlineQueue'
+import { registerSW } from 'virtual:pwa-register'
+registerSW({
+  immediate: true
+})
 const app = createApp(App)
 
 app.use(createPinia())
@@ -20,6 +25,19 @@ window.addEventListener('online', () => {
 
 window.addEventListener('offline', () => {
   window.dispatchEvent(new CustomEvent('app:offline'))
+})
+
+window.addEventListener('app:online', () => {
+  const queue = useOfflineQueueStore()
+  const ui = useUIStore()
+
+  ui.setOffline(false)
+  queue.sync()
+})
+
+window.addEventListener('app:offline', () => {
+  const ui = useUIStore()
+  ui.setOffline(true)
 })
 
 app.mount('#app')
