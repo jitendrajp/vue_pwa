@@ -34,6 +34,23 @@
         Saved offline. Will sync automatically.
       </p>
     </div>
+    <div class="mt-6">
+      <h2 class="font-semibold mb-2">
+        Notifications
+      </h2>
+
+      <button
+          class="w-full py-3 rounded-xl bg-black text-white"
+          @click="togglePush"
+      >
+        {{ notifications.pushEnabled ? 'Disable Push' : 'Enable Push' }}
+      </button>
+
+      <p class="text-xs text-gray-500 mt-2">
+        On iOS, notifications work only after installing the app
+        on your home screen.
+      </p>
+    </div>
   </div>
 </template>
 
@@ -44,6 +61,8 @@ import { useOfflineQueueStore } from '@/stores/offlineQueue'
 import { useUIStore } from '@/stores/ui'
 import { saveUser } from '@/db/user.db'
 import { updateMe } from '@/services/user.service'
+import { useNotificationsStore } from '@/stores/notifications'
+import { useNotificationsStore as useToast } from '@/stores/notifications'
 
 const userStore = useUserStore()
 const queue = useOfflineQueueStore()
@@ -83,4 +102,22 @@ const save = async () => {
 
   userStore.setLanguage(form.language)
 }
+
+const notifications = useNotificationsStore()
+const toast = useToast()
+
+const togglePush = async () => {
+  try {
+    if (notifications.pushEnabled) {
+      await notifications.disablePush()
+      toast.push('Notifications disabled', 'info')
+    } else {
+      await notifications.enablePush()
+      toast.push('Notifications enabled', 'success')
+    }
+  } catch (e) {
+    toast.push(e.message, 'warning')
+  }
+}
+
 </script>
