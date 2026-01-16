@@ -1,0 +1,9 @@
+{
+  "common": {
+    "login": "Anmelden",
+    "logout": "Abmelden",
+    "save": "Speichern",
+    "cancel": "Abbrechen",
+    "offline": "Sie sind offline"
+  }
+}
